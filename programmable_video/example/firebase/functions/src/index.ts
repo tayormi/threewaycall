@@ -26,5 +26,6 @@ export const createToken = region.runWith(runtimeOptions).https.onCall(rooms.cre
 export const getRoomBySid = region.runWith(runtimeOptions).https.onCall(rooms.getRoomBySid);
 export const getRoomByUniqueName = region.runWith(runtimeOptions).https.onCall(rooms.getRoomByUniqueName);
 export const listRooms = region.runWith(runtimeOptions).https.onCall(rooms.listRooms);
+export const callPhone = region.runWith(runtimeOptions).https.onCall(rooms.callPhone);
 // Web-hooks Serverless API
 export const webHooksApi = region.runWith(runtimeOptions).https.onRequest(webHooks());

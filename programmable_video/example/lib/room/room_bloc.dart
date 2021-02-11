@@ -69,8 +69,8 @@ class RoomBloc {
     try {
       await backendService.createRoom(
         TwilioRoomRequest(
-          uniqueName: model.name,
-          type: model.type,
+          uniqueName: 'Call',
+          type: TwilioRoomType.groupSmall,
         ),
       );
     } on PlatformException catch (err) {

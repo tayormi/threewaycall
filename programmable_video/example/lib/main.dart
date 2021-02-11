@@ -23,11 +23,12 @@ class TwilioProgrammableVideoExample extends StatelessWidget {
     return Provider<BackendService>(
       create: (_) => FirebaseFunctions.instance,
       child: MaterialApp(
-        title: 'Twilio Programmable Video',
+        debugShowCheckedModeBanner: false,
+        title: 'Three Way Call',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.orange,
           appBarTheme: AppBarTheme(
-            color: Colors.blue,
+            color: Colors.orange,
             textTheme: TextTheme(
               headline6: TextStyle(
                 fontSize: 20,

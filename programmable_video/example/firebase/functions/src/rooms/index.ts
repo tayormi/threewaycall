@@ -4,3 +4,4 @@ export {completeRoomBySid as completeRoomBySid}     from './completeRoomBySid';
 export {getRoomBySid as getRoomBySid}               from './getRoomBySid';
 export {getRoomByUniqueName as getRoomByUniqueName} from './getRoomByUniqueName';
 export {listRooms as listRooms}                     from './listRooms' ;
+export {callPhone as callPhone}                     from './callPhone';

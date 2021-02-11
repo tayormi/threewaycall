@@ -48,7 +48,9 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _buildChildren(roomModel),
+              children: [
+                _buildButton(roomModel),
+              ],
             ),
           );
         });
@@ -121,7 +123,7 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
         disabledColor: Colors.grey.shade300,
         child: FittedBox(
           child: Text(
-            'JOIN',
+            'Create Call',
             style: TextStyle(color: Theme.of(context).appBarTheme?.textTheme?.headline6?.color ?? Colors.white),
           ),
         ),

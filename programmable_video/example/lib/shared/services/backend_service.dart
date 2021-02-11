@@ -1,5 +1,6 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/services.dart';
+import 'package:twilio_programmable_video_example/models/twilio_call_response.dart';
 import 'package:twilio_programmable_video_example/models/twilio_list_room_request.dart';
 import 'package:twilio_programmable_video_example/models/twilio_list_room_response.dart';
 import 'package:twilio_programmable_video_example/models/twilio_room_by_sid_request.dart';
@@ -16,6 +17,7 @@ abstract class BackendService {
   Future<TwilioRoomResponse> getRoomBySid(TwilioRoomBySidRequest twilioRoomBySidRequest);
   Future<TwilioRoomResponse> getRoomByUniqueName(TwilioRoomByUniqueNameRequest twilioRoomByUniqueNameRequest);
   Future<TwilioListRoomResponse> listRooms(TwilioListRoomRequest twilioListRoomRequest);
+  Future<TwilioCallResponse> callPhone(String phoneNumber);
 }
 
 class FirebaseFunctions implements BackendService {
@@ -100,6 +102,20 @@ class FirebaseFunctions implements BackendService {
     try {
       final response = await cf.getHttpsCallable(functionName: 'listRooms').call(twilioListRoomRequest.toMap());
       return TwilioListRoomResponse.fromMap(Map<String, dynamic>.from(response.data));
+    } on CloudFunctionsException catch (e) {
+      throw PlatformException(
+        code: e.code,
+        message: e.message,
+        details: e.details,
+      );
+    }
+  }
+
+  @override
+  Future<TwilioCallResponse> callPhone(String phoneNumber) async {
+     try {
+      final response = await cf.getHttpsCallable(functionName: 'callPhone').call(phoneNumber);
+      return TwilioCallResponse.fromMap(Map<String, dynamic>.from(response.data));
     } on CloudFunctionsException catch (e) {
       throw PlatformException(
         code: e.code,
