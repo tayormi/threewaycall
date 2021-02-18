@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:twilio_programmable_video_example/conference/conference_button_bar.dart';
@@ -22,8 +23,10 @@ class ConferencePage extends StatefulWidget {
 }
 
 class _ConferencePageState extends State<ConferencePage> {
-  final StreamController<bool> _onButtonBarVisibleStreamController = StreamController<bool>.broadcast();
-  final StreamController<double> _onButtonBarHeightStreamController = StreamController<double>.broadcast();
+  final StreamController<bool> _onButtonBarVisibleStreamController =
+      StreamController<bool>.broadcast();
+  final StreamController<double> _onButtonBarHeightStreamController =
+      StreamController<double>.broadcast();
   ConferenceRoom _conferenceRoom;
   StreamSubscription _onConferenceRoomException;
 
@@ -45,7 +48,8 @@ class _ConferencePageState extends State<ConferencePage> {
       await conferenceRoom.connect();
       setState(() {
         _conferenceRoom = conferenceRoom;
-        _onConferenceRoomException = _conferenceRoom.onException.listen((err) async {
+        _onConferenceRoomException =
+            _conferenceRoom.onException.listen((err) async {
           await PlatformAlertDialog(
             title: err is PlatformException ? err.message : 'An error occured',
             content: err is PlatformException ? err.details : err.toString(),
@@ -78,7 +82,8 @@ class _ConferencePageState extends State<ConferencePage> {
     _freePortraitLock();
     _wakeLock(false);
     _disposeStreamsAndSubscriptions();
-    if (_conferenceRoom != null) _conferenceRoom.removeListener(_conferenceRoomUpdated);
+    if (_conferenceRoom != null)
+      _conferenceRoom.removeListener(_conferenceRoomUpdated);
     super.dispose();
   }
 
@@ -92,9 +97,12 @@ class _ConferencePageState extends State<ConferencePage> {
   }
 
   Future<void> _disposeStreamsAndSubscriptions() async {
-    if (_onButtonBarVisibleStreamController != null) await _onButtonBarVisibleStreamController.close();
-    if (_onButtonBarHeightStreamController != null) await _onButtonBarHeightStreamController.close();
-    if (_onConferenceRoomException != null) await _onConferenceRoomException.cancel();
+    if (_onButtonBarVisibleStreamController != null)
+      await _onButtonBarVisibleStreamController.close();
+    if (_onButtonBarHeightStreamController != null)
+      await _onButtonBarHeightStreamController.close();
+    if (_onConferenceRoomException != null)
+      await _onConferenceRoomException.cancel();
   }
 
   @override
@@ -158,11 +166,24 @@ class _ConferencePageState extends State<ConferencePage> {
     Navigator.of(context).pop();
   }
 
-  void _onPersonAdd() {
+  void _onPersonAdd() async {
     Debug.log('onPersonAdd');
     try {
-      _conferenceRoom.addDummy(
-        child: Stack(
+      final phone = showTextInputDialog(
+        context: context,
+        textFields: const [
+          DialogTextField(
+            keyboardType: TextInputType.phone,
+            hintText: 'Phone Number',
+          ),
+        ],
+        title: 'Please,',
+        message: 'Enter Phone Number',
+      );
+      await phone.then((value) => {
+            if (value[0] != null)
+              {_conferenceRoom.callPhoneNumber(context, value[0], 
+              Stack(
           children: <Widget>[
             const Placeholder(),
             Center(
@@ -185,7 +206,34 @@ class _ConferencePageState extends State<ConferencePage> {
             ),
           ],
         ),
-      );
+              )}
+          });
+
+      // _conferenceRoom.addDummy(
+      //   child: Stack(
+      //     children: <Widget>[
+      //       const Placeholder(),
+      //       Center(
+      //         child: Text(
+      //           (_conferenceRoom.participants.length + 1).toString(),
+      //           style: const TextStyle(
+      //             shadows: <Shadow>[
+      //               Shadow(
+      //                 blurRadius: 3.0,
+      //                 color: Color.fromARGB(255, 0, 0, 0),
+      //               ),
+      //               Shadow(
+      //                 blurRadius: 8.0,
+      //                 color: Color.fromARGB(255, 255, 255, 255),
+      //               ),
+      //             ],
+      //             fontSize: 80,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
     } on PlatformException catch (err) {
       PlatformAlertDialog(
         title: err.message,
@@ -197,10 +245,11 @@ class _ConferencePageState extends State<ConferencePage> {
 
   void _onPersonRemove() {
     Debug.log('onPersonRemove');
-    _conferenceRoom.removeDummy();
+    // _conferenceRoom.removeDummy();
   }
 
-  Widget _buildParticipants(BuildContext context, Size size, ConferenceRoom conferenceRoom) {
+  Widget _buildParticipants(
+      BuildContext context, Size size, ConferenceRoom conferenceRoom) {
     final children = <Widget>[];
     final length = conferenceRoom.participants.length;
 
@@ -209,7 +258,8 @@ class _ConferencePageState extends State<ConferencePage> {
       return Stack(children: children);
     }
 
-    void buildInCols(bool removeLocalBeforeChunking, bool moveLastOfEachRowToNextRow, int columns) {
+    void buildInCols(bool removeLocalBeforeChunking,
+        bool moveLastOfEachRowToNextRow, int columns) {
       _buildLayoutInGrid(
         context,
         size,
@@ -241,18 +291,23 @@ class _ConferencePageState extends State<ConferencePage> {
     );
   }
 
-  void _buildOverlayLayout(BuildContext context, Size size, List<Widget> children) {
+  void _buildOverlayLayout(
+      BuildContext context, Size size, List<Widget> children) {
     final participants = _conferenceRoom.participants;
     if (participants.length == 1) {
       children.add(_buildNoiseBox());
     } else {
-      final remoteParticipant = participants.firstWhere((ParticipantWidget participant) => participant.isRemote, orElse: () => null);
+      final remoteParticipant = participants.firstWhere(
+          (ParticipantWidget participant) => participant.isRemote,
+          orElse: () => null);
       if (remoteParticipant != null) {
         children.add(remoteParticipant);
       }
     }
 
-    final localParticipant = participants.firstWhere((ParticipantWidget participant) => !participant.isRemote, orElse: () => null);
+    final localParticipant = participants.firstWhere(
+        (ParticipantWidget participant) => !participant.isRemote,
+        orElse: () => null);
     if (localParticipant != null) {
       children.add(DraggablePublisher(
         key: Key('publisher'),
@@ -275,7 +330,9 @@ class _ConferencePageState extends State<ConferencePage> {
     final participants = _conferenceRoom.participants;
     ParticipantWidget localParticipant;
     if (removeLocalBeforeChunking) {
-      localParticipant = participants.firstWhere((ParticipantWidget participant) => !participant.isRemote, orElse: () => null);
+      localParticipant = participants.firstWhere(
+          (ParticipantWidget participant) => !participant.isRemote,
+          orElse: () => null);
       if (localParticipant != null) {
         participants.remove(localParticipant);
       }
@@ -345,7 +402,9 @@ class _ConferencePageState extends State<ConferencePage> {
     }
     var first = 0;
     var last = size;
-    final totalLoop = array.length % size == 0 ? array.length ~/ size : array.length ~/ size + 1;
+    final totalLoop = array.length % size == 0
+        ? array.length ~/ size
+        : array.length ~/ size + 1;
     for (var i = 0; i < totalLoop; i++) {
       if (last > array.length) {
         result.add(array.sublist(first, array.length));
@@ -364,7 +423,8 @@ class _ConferencePageState extends State<ConferencePage> {
 
   void _onShowBar() {
     setState(() {
-      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom, SystemUiOverlay.top]);
+      SystemChrome.setEnabledSystemUIOverlays(
+          [SystemUiOverlay.bottom, SystemUiOverlay.top]);
     });
     _onButtonBarVisibleStreamController.add(true);
   }

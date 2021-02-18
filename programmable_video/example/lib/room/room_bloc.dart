@@ -82,7 +82,7 @@ class RoomBloc {
     }
   }
 
-  void updateName(String name) => updateWith(name: name);
+  void updateName(String name) => updateWith(name: 'Call');
 
   void updateType(TwilioRoomType type) => updateWith(type: type);
 
@@ -99,7 +99,7 @@ class RoomBloc {
       raiseLoading = true;
     }
     _modelSubject.value = model.copyWith(
-      name: name,
+      name: 'Call',
       isLoading: isLoading,
       isSubmitted: isSubmitted,
       token: token,

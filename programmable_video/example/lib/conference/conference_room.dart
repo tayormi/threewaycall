@@ -3,9 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:twilio_programmable_video/twilio_programmable_video.dart';
 import 'package:twilio_programmable_video_example/conference/participant_widget.dart';
 import 'package:twilio_programmable_video_example/debug.dart';
+import 'package:twilio_programmable_video_example/models/twilio_call_phone_request.dart';
+import 'package:twilio_programmable_video_example/shared/services/backend_service.dart';
 
 class ConferenceRoom with ChangeNotifier {
   final String name;
@@ -197,6 +200,23 @@ class ConferenceRoom with ChangeNotifier {
       );
     }
   }
+  Future<void> callPhoneNumber(BuildContext context, String phoneNumber, Widget child) async {
+    final backendService = Provider.of<BackendService>(context, listen: false);
+    Debug.log('Calling Phone');
+    try {
+      final twilioCallPhoneRequest = TwilioCallPhoneRequest(phoneNumber: phoneNumber);
+      final res = await backendService.callPhone(twilioCallPhoneRequest);
+      if(res != null) {
+        addDummy(child: child);
+      }
+    } on PlatformException catch (err) {
+      if (err.code != 'functionsError') {
+        rethrow;
+      }
+    } catch (err) {
+      rethrow;
+    }
+  }
 
   Future<void> toggleFlashlight() async {
     await _cameraCapturer.setTorch(!flashEnabled);
@@ -221,7 +241,7 @@ class ConferenceRoom with ChangeNotifier {
         isRemote: true,
         audioEnabled: true,
         videoEnabled: true,
-        isDummy: true,
+        isDummy: false,
       ),
     );
     notifyListeners();
@@ -306,6 +326,7 @@ class ConferenceRoom with ChangeNotifier {
 
   void _onParticipantConnected(RoomParticipantConnectedEvent event) {
     Debug.log('ConferenceRoom._onParticipantConnected, ${event.remoteParticipant.sid}');
+    Debug.log('ConferenceRoom._onParticipantConnected, ${event.remoteParticipant.identity}');
     _addRemoteParticipantListeners(event.remoteParticipant);
   }
 

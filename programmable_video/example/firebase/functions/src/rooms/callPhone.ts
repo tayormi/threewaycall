@@ -21,10 +21,13 @@ export const callPhone = async (data: any, context: CallableContext) => {
         //     statusCallbackMethod: 'POST',
         //     statusCallback: `https://europe-west1-${process.env.GCLOUD_PROJECT}.cloudfunctions.net/webHooksApi/web-hooks/twilio/programmable-video/rooms/`
         // };
+        if (!data.phoneNumber) {
+            throw new functions.https.HttpsError('invalid-argument', 'phone number is required!');
+        }
         
         const callOptions: CallListInstanceCreateOptions = {
             twiml: `<Response><Connect><Room participantIdentity='PhoneCall'>Call</Room></Connect></Response>`,
-            to: data,
+            to: data.phoneNumber,
             from: '+19374683173'
         };
        // const options = _.merge({}, defaultOptions, _.omitBy(callOptions, _.isNil));

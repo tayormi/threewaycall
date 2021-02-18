@@ -48,9 +48,10 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
             padding: const EdgeInsets.only(left: 16, right: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildButton(roomModel),
-              ],
+              children: _buildChildren(roomModel)
+              //  [
+              //   _buildButton(roomModel),
+              // ],
             ),
           );
         });
@@ -58,50 +59,60 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
 
   List<Widget> _buildChildren(RoomModel roomModel) {
     return <Widget>[
-      TextField(
-        key: Key('enter-room-name'),
-        decoration: InputDecoration(
-          labelText: 'Enter room name',
-          errorText: roomModel.nameErrorText,
-          enabled: !roomModel.isLoading,
-        ),
-        controller: _nameController,
-        onChanged: widget.roomBloc.updateName,
-      ),
+      // TextField(
+      //   key: Key('enter-room-name'),
+      //   decoration: InputDecoration(
+      //     labelText: 'Enter room name',
+      //     errorText: roomModel.nameErrorText,
+      //     enabled: !roomModel.isLoading,
+      //   ),
+      //   controller: _nameController,
+      //   onChanged: widget.roomBloc.updateName,
+      // ),
+      // TextField(
+      //   key: Key('enter-room-name'),
+      //   decoration: InputDecoration(
+      //     labelText: 'Enter your name',
+      //     errorText: roomModel.nameErrorText,
+      //     enabled: !roomModel.isLoading,
+      //   ),
+      //   controller: _nameController,
+      //   onChanged: widget.roomBloc.updateName,
+      // ),
       const SizedBox(
         height: 16,
       ),
-      Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Text(
-              'Room size:',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: DropdownButton(
-              underline: Container(
-                height: 1,
-                color: Colors.grey,
-              ),
-              isExpanded: true,
-              items: <TwilioRoomType>[TwilioRoomType.group, TwilioRoomType.groupSmall].map<DropdownMenuItem<TwilioRoomType>>((TwilioRoomType value) {
-                return DropdownMenuItem<TwilioRoomType>(
-                  value: value,
-                  child: Text(RoomModel.getTypeText(value)),
-                );
-              }).toList(),
-              value: widget.roomBloc.model.type,
-              onChanged: widget.roomBloc.updateType,
-            ),
-          ),
-        ],
-      ),
+      // Row(
+      //   children: <Widget>[
+      //     Expanded(
+      //       flex: 1,
+      //       child: Text(
+      //         'Room size:',
+      //         style: TextStyle(
+      //           color: Colors.grey.shade600,
+      //         ),
+      //       ),
+      //     ),
+      //     Expanded(
+      //       flex: 3,
+      //       child: DropdownButton(
+      //         underline: Container(
+      //           height: 1,
+      //           color: Colors.grey,
+      //         ),
+      //         isExpanded: true,
+      //         items: <TwilioRoomType>[TwilioRoomType.group, TwilioRoomType.groupSmall].map<DropdownMenuItem<TwilioRoomType>>((TwilioRoomType value) {
+      //           return DropdownMenuItem<TwilioRoomType>(
+      //             value: value,
+      //             child: Text(RoomModel.getTypeText(value)),
+      //           );
+      //         }).toList(),
+      //         value: widget.roomBloc.model.type,
+      //         onChanged: widget.roomBloc.updateType,
+      //       ),
+      //     ),
+      //   ],
+      // ),
       const SizedBox(
         height: 16,
       ),
@@ -127,7 +138,8 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
             style: TextStyle(color: Theme.of(context).appBarTheme?.textTheme?.headline6?.color ?? Colors.white),
           ),
         ),
-        onPressed: roomModel.canSubmit && !roomModel.isLoading ? () => _submit() : null,
+        onPressed:// roomModel.canSubmit && 
+        !roomModel.isLoading ? () => _submit() : null,
       ),
     );
   }
