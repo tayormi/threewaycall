@@ -422,7 +422,7 @@ packages:
       name: twilio_programmable_video
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3+1"
+    version: "0.6.4"
   twilio_programmable_video_platform_interface:
     dependency: transitive
     description:
