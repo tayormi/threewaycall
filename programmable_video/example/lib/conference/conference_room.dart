@@ -207,7 +207,7 @@ class ConferenceRoom with ChangeNotifier {
       final twilioCallPhoneRequest = TwilioCallPhoneRequest(phoneNumber: phoneNumber);
       final res = await backendService.callPhone(twilioCallPhoneRequest);
       if(res != null) {
-        addDummy(child: child);
+        Debug.log('Phone Called');
       }
     } on PlatformException catch (err) {
       if (err.code != 'functionsError') {
